@@ -1,8 +1,11 @@
 import happybase as hb
 
-# DON'T CHANGE THE PRINT FORMAT, WHICH IS THE OUTPUT
-# OR YOU WON'T RECEIVE POINTS FROM THE GRADER
+# scan powers table
+connection = hb.Connection('localhost')
+connection.open()
+powers = connection.table('powers')
 
-for key, data in ???:
+
+for key, data in powers.scan(include_timestamp=True):
     print('Found: {}, {}'.format(key, data))
 

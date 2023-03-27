@@ -1,16 +1,26 @@
 import happybase as hb
 
-# DON'T CHANGE THE PRINT FORMAT, WHICH IS THE OUTPUT
-# OR YOU WON'T RECEIVE POINTS FROM THE GRADER
+connection = hb.Connection('localhost')
+connection.open()
 
-color = ???
-name = ???
-power = ???
+powers = connection.table('powers')
 
-color1 = ???
-name1 = ???
-power1 = ???
+"""
+nested for loop to achieve the same result as follows, as if HBase suported SQL:
+SELECT p.name, p.power, p1.name, p1.power, p.color
+FROM powers AS p
+INNER JOIN powers AS p1
+       ON p.color = p1.color
+       AND p.name <> p1.name;
+"""
 
-print('{}, {}, {}, {}, {}'.format(name, power, name1, power1, color))
+for key, data in powers.scan():
+    for key1, data1 in powers.scan():
+        if data[b'custom:color'] == data1[b'custom:color'] and data[b'professional:name'] != data1[b'professional:name']:
+            print('{}, {}, {}, {}, {}'.format(
+                data[b'professional:name'], data[b'personal:power'],
+                data1[b'professional:name'], data1[b'personal:power'], data[b'custom:color'])
+            )
 
+connection.close()
 
